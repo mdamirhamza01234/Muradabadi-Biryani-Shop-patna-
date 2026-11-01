@@ -25,7 +25,36 @@ footer{background:#0b1520;color:#d6dce0;padding:35px 0}.footer-row{display:flex;
 .wa{position:fixed;right:20px;bottom:20px;background:#20b95a;color:white;border-radius:50px;padding:14px 18px;font-size:13px;font-weight:800;box-shadow:0 8px 25px #0003;z-index:30}
 @media(max-width:800px){.links{display:none;position:absolute;top:78px;left:0;right:0;background:var(--paper);padding:22px;flex-direction:column;gap:18px;border-bottom:1px solid var(--line)}.links.open{display:flex}.menu-toggle{display:block}.navbtn{display:none}.hero-grid,.story-grid,.visit-grid{grid-template-columns:1fr}.hero-grid{padding:55px 0}.hero-photo{max-width:520px;margin:auto}.hero-photo img{height:340px}.photo-tag{left:0}.menu-grid{grid-template-columns:repeat(2,1fr)}section{padding:65px 0}}
 @media(max-width:540px){.menu-grid{grid-template-columns:1fr}.dish img{height:220px}.topbar .wrap{justify-content:center}.hero h1{font-size:47px}.story img{height:300px}.ticks{grid-template-columns:1fr}}
+
+.ph{display:grid;place-items:center;align-content:center;gap:6px;width:100%;background:linear-gradient(135deg,#c46b3b,#ef9a54);color:#fff;text-align:center;font-weight:700}.ph span{font-size:56px;line-height:1}.ph small{font-size:12px;opacity:.9;padding:0 12px}
+.btn-order{background:var(--orange);color:var(--ink)}.btn-order:hover{background:#ffb06e}
+body.lock{overflow:hidden}
+.order-modal{position:fixed;inset:0;background:#0009;z-index:100;display:flex;align-items:flex-end;justify-content:center}.order-modal[hidden]{display:none}
+.order-sheet{background:var(--paper);width:min(640px,100%);max-height:94vh;border-radius:18px 18px 0 0;display:flex;flex-direction:column;overflow:hidden}
+.order-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.order-head h2{font-size:22px;margin:0}
+.order-close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer}
+.order-body{padding:16px 18px;overflow-y:auto;flex:1}
+.field{display:block;font-weight:700;font-size:13px}.field span{color:var(--muted);font-weight:500}.field input{width:100%;margin-top:7px;padding:13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:15px;background:#fff}
+.order-sub{margin:20px 0 10px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--copper)}
+.o-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fff}.o-name{font:700 18px "Playfair Display",serif;margin-bottom:10px}.o-name b{color:var(--copper);margin-right:8px;font-family:"DM Sans",sans-serif}
+.o-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}.o-row:first-of-type{border-top:0}.o-plate{font-weight:700;font-size:14px}
+.stepper{display:flex;align-items:center;gap:6px}.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--copper);color:#fff;font-size:22px;font-weight:700;cursor:pointer;line-height:1}.stepper button:disabled{background:#d9cfc2;cursor:default}.stepper output{min-width:30px;text-align:center;font-weight:800;font-size:16px}
+.order-foot{padding:14px 18px;border-top:1px solid var(--line);background:var(--paper)}#orderSummary{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)}#orderSummary.err{color:#c0392b}.order-foot .btn{width:100%;background:#20b95a;padding:15px;font-size:15px}.order-foot .btn:hover{background:#17a24b}
+@media(min-width:700px){.order-modal{align-items:center}.order-sheet{border-radius:18px;max-height:90vh}}
 </style>
+<script>
+/* Image loader: tries images/ folder first, then online backup, else a nice placeholder (never a broken icon). */
+function imgFail(el){
+  var alts=(el.getAttribute('data-alt')||'').split(' ').filter(Boolean);
+  if(alts.length){el.src=alts.shift();el.setAttribute('data-alt',alts.join(' '));return;}
+  el.onerror=null;
+  var cs=getComputedStyle(el),d=document.createElement('div');
+  d.className='ph';d.setAttribute('role','img');d.setAttribute('aria-label',el.alt||'Biryani');
+  d.style.height=cs.height;d.style.borderRadius=cs.borderRadius;
+  d.innerHTML='<span>🍛</span><small>'+(el.alt||'')+'</small>';
+  el.replaceWith(d);
+}
+</script>
 </head>
 <body>
 <div class="topbar"><div class="wrap"><span>📍 New Market · Patna Junction, Patna</span><span>Freshly prepared · Takeaway friendly</span></div></div>
@@ -38,24 +67,85 @@ footer{background:#0b1520;color:#d6dce0;padding:35px 0}.footer-row{display:flex;
 <section class="hero" id="home"><div class="wrap hero-grid">
 <div><div class="eyebrow">A Patna Junction favourite</div><h1>Good food.<br><em>Great biryani.</em><br>Full dil se.</h1>
 <p>Muradabadi biryani ka apna hi sukoon. Khushbudaar chawal, lazeez masale aur har bite mein desi swaad — Patna Junction ke paas.</p>
-<div class="hero-actions"><a class="btn" href="#menu">Discover the menu <span>→</span></a><a class="btn-outline" href="#visit">Get directions</a></div>
+<div class="hero-actions"><a class="btn" href="#menu">Discover the menu <span>→</span></a><button type="button" class="btn btn-order" id="openOrder">🍽️ Order for any function</button><a class="btn-outline" href="#visit">Get directions</a></div>
 <div class="hero-note"><span>Near Patna Junction</span><span>Quick takeaway</span><span>Made fresh</span></div></div>
-<div class="hero-photo"><img src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=1100&q=88" alt="Aromatic chicken biryani served in a bowl"><div class="photo-tag"><small>Made for biryani lovers</small>Ek plate aur ho jaaye!</div></div>
+<div class="hero-photo"><img src="images/hero.jpg" data-alt="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=1100&q=88" onerror="imgFail(this)" alt="Aromatic chicken biryani served in a bowl"><div class="photo-tag"><small>Made for biryani lovers</small>Ek plate aur ho jaaye!</div></div>
 </div></section>
 <div class="strip"><div class="wrap"><span>Muradabadi flavour</span><span>Freshly served</span><span>Patna Junction ke paas</span></div></div>
 <section id="menu"><div class="wrap"><div class="section-head"><div class="eyebrow">Straight from our kitchen</div><h2>Cravings ka asli jawab</h2><p>Our popular picks. Menu, availability aur prices ke liye shop par confirm karein — details update ki ja sakti hain.</p></div>
 <div class="menu-grid">
-<article class="dish"><img src="https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=800&q=85" alt="Chicken biryani"><div class="dish-body"><div class="dish-top"><h3>Muradabadi Chicken Biryani</h3><span class="badge">Signature</span></div><p>Khushbudaar chawal aur masalon ka dilkash combination.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
-<article class="dish"><img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=85" alt="Biryani rice"><div class="dish-body"><div class="dish-top"><h3>Chicken Biryani</h3><span class="badge">Popular</span></div><p>Har bite mein satisfying taste, lunch ya dinner ke liye.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
-<article class="dish"><img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=85" alt="Chicken curry"><div class="dish-body"><div class="dish-top"><h3>Chicken Special</h3><span class="badge">Must try</span></div><p>Biryani ke saath kuch extra, apni pasand se poochhein.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
+<article class="dish"><img src="images/muradabadi-chicken-biryani.jpg" data-alt="https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=800&q=85 https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=85" onerror="imgFail(this)" alt="Chicken biryani"><div class="dish-body"><div class="dish-top"><h3>Muradabadi Chicken Biryani</h3><span class="badge">Signature</span></div><p>Khushbudaar chawal aur masalon ka dilkash combination.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
+<article class="dish"><img src="images/chicken-biryani.jpg" data-alt="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=85" onerror="imgFail(this)" alt="Biryani rice"><div class="dish-body"><div class="dish-top"><h3>Chicken Biryani</h3><span class="badge">Popular</span></div><p>Har bite mein satisfying taste, lunch ya dinner ke liye.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
+<article class="dish"><img src="images/chicken-special.jpg" data-alt="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=85" onerror="imgFail(this)" alt="Chicken curry"><div class="dish-body"><div class="dish-top"><h3>Chicken Special</h3><span class="badge">Must try</span></div><p>Biryani ke saath kuch extra, apni pasand se poochhein.</p><a class="order" href="#visit">Ask for today's price ↗</a></div></article>
 </div></div></section>
-<section class="story" id="story"><div class="wrap story-grid"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=85" alt="Indian food served fresh"><div class="story-copy"><div class="eyebrow">Simple food, memorable flavour</div><h2>Biryani ka mood ho, toh yahin aaiye.</h2><p>Patna Junction ke aas-paas safar kar rahe hon ya New Market mein hon — ek tasty biryani break ke liye humse milne aaiye. Humara focus hai satisfying portions, familiar flavours aur friendly service.</p><p>Website par diye gaye menu items illustrative hain. Shop ke actual dishes, prices aur timings owner ki confirmation ke baad update karein.</p><div class="ticks"><span>Takeaway friendly</span><span>Junction ke paas</span><span>Quick meal stop</span><span>Biryani focused</span></div><a class="btn" href="#visit">Plan your visit →</a></div></div></section>
+<section class="story" id="story"><div class="wrap story-grid"><img src="images/story.jpg" data-alt="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=85" onerror="imgFail(this)" alt="Indian food served fresh"><div class="story-copy"><div class="eyebrow">Simple food, memorable flavour</div><h2>Biryani ka mood ho, toh yahin aaiye.</h2><p>Patna Junction ke aas-paas safar kar rahe hon ya New Market mein hon — ek tasty biryani break ke liye humse milne aaiye. Humara focus hai satisfying portions, familiar flavours aur friendly service.</p><p>Website par diye gaye menu items illustrative hain. Shop ke actual dishes, prices aur timings owner ki confirmation ke baad update karein.</p><div class="ticks"><span>Takeaway friendly</span><span>Junction ke paas</span><span>Quick meal stop</span><span>Biryani focused</span></div><a class="btn" href="#visit">Plan your visit →</a></div></div></section>
 <section id="visit"><div class="wrap"><div class="section-head"><div class="eyebrow">Come say hello</div><h2>Find us in Patna</h2><p>Patna Junction se New Market / G.P.O. Golamber ki taraf aaiye.</p></div>
 <div class="visit-grid"><div class="visit-card"><h3>Muradabadi Biryani Shop</h3><p><strong>Address</strong><br>G.P.O. Golamber, New Market, New Market Station Road, Patna, Bihar 800001</p><p><strong>Phone</strong><br>+91 63986 72009</p><p><strong>Landmark</strong><br>Patna Junction / New Market area</p><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Muradabadi+Biryani+Shop+GPO+Golamber+Patna">Open in Google Maps ↗</a></div>
 <div class="map-card"><div><div class="pin">📍</div><h3>Near Patna Junction</h3><p>New Market Station Road<br>G.P.O. Golamber, Patna 800001</p><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Muradabadi+Biryani+Shop+GPO+Golamber+Patna">Get directions →</a></div></div></div></div></section>
 <div class="cta"><div class="eyebrow" style="color:#ffe0c7">Biryani calling?</div><h2>Patna Junction par milte hain!</h2><p>Apni next biryani craving ko delay mat kijiye.</p><a class="btn" href="tel:+916398672009">Call the shop · +91 63986 72009</a></div>
 </main>
 <footer><div class="wrap footer-row"><div><strong>Muradabadi Biryani Shop</strong><br>Patna Junction · New Market, Patna</div><div>© <span id="year"></span> Muradabadi Biryani Shop. All rights reserved.</div><div><a href="#home">Back to top ↑</a></div></div></footer>
+<div class="order-modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderTitle" hidden>
+<div class="order-sheet">
+<div class="order-head"><h2 id="orderTitle">Order for any function</h2><button type="button" class="order-close" id="orderClose" aria-label="Close">✕</button></div>
+<div class="order-body">
+<label class="field">Function / Occasion <span>(optional)</span><input id="fnName" type="text" maxlength="80" placeholder="Jaise: Shaadi, Birthday, Party, Office..."></label>
+<div class="order-sub">Biryani category chuniye</div>
+<div id="orderList"></div>
+</div>
+<div class="order-foot"><div id="orderSummary">Abhi koi plate select nahi hui</div><button type="button" class="btn" id="orderSubmit">Submit order via WhatsApp</button></div>
+</div></div>
+<script>
+(function(){
+  var WA_NUMBER='916398672009';
+  /* Biryani list — yahan naye items (Mutton, Egg, Veg...) add kar sakte hain */
+  var ITEMS=['Muradabadi Chicken Biryani','Chicken Biryani','Chicken Special'];
+  var PLATES=['Quarter','Half','Full'];
+  var qty={};
+  var modal=document.getElementById('orderModal'),list=document.getElementById('orderList'),sum=document.getElementById('orderSummary');
+
+  list.innerHTML=ITEMS.map(function(n,i){
+    return '<div class="o-item"><div class="o-name"><b>'+(i+1)+'.</b>'+n+'</div>'+PLATES.map(function(p,j){
+      var k=i+'-'+j;
+      return '<div class="o-row"><span class="o-plate">'+p+' plate</span><div class="stepper"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Kam karein" disabled>−</button><output id="q'+k+'">0</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Badhayein">+</button></div></div>';
+    }).join('')+'</div>';
+  }).join('');
+
+  function total(){var t=0;for(var k in qty)t+=qty[k];return t;}
+  function refresh(){
+    var t=total();sum.className='';
+    sum.textContent=t?('Total '+t+' plate'+(t>1?'s':'')+' select hui'):'Abhi koi plate select nahi hui';
+  }
+  list.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-k]');if(!b)return;
+    var k=b.dataset.k,v=Math.max(0,Math.min(99,(qty[k]||0)+Number(b.dataset.d)));
+    qty[k]=v;document.getElementById('q'+k).textContent=v;
+    list.querySelector('button[data-k="'+k+'"][data-d="-1"]').disabled=(v===0);
+    refresh();
+  });
+
+  function open(){modal.hidden=false;document.body.classList.add('lock');}
+  function close(){modal.hidden=true;document.body.classList.remove('lock');}
+  document.getElementById('openOrder').addEventListener('click',open);
+  document.getElementById('orderClose').addEventListener('click',close);
+  modal.addEventListener('click',function(e){if(e.target===modal)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)close();});
+
+  document.getElementById('orderSubmit').addEventListener('click',function(){
+    if(!total()){sum.textContent='Pehle kam se kam 1 plate chuniye';sum.className='err';return;}
+    var fn=document.getElementById('fnName').value.trim();
+    var lines=['*New Order - Muradabadi Biryani Shop*'];
+    if(fn)lines.push('Function: '+fn);
+    lines.push('');
+    ITEMS.forEach(function(n,i){
+      var rows=PLATES.map(function(p,j){var q=qty[i+'-'+j]||0;return q?('   - '+p+' plate x '+q):'';}).filter(Boolean);
+      if(rows.length){lines.push((i+1)+'. '+n);lines=lines.concat(rows);}
+    });
+    lines.push('');lines.push('Total plates: '+total());
+    window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank','noopener');
+  });
+})();
+</script>
 <a class="wa" href="https://wa.me/916398672009?text=Hello%2C%20I%20want%20to%20know%20about%20today%27s%20biryani%20menu." target="_blank" rel="noopener">WhatsApp ↗</a>
 <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 </body></html>
