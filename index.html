@@ -34,13 +34,14 @@ body.lock{overflow:hidden}
 .order-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.order-head h2{font-size:22px;margin:0}
 .order-close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer}
 .order-body{padding:16px 18px;overflow-y:auto;flex:1}
-.field{display:block;font-weight:700;font-size:13px}.field span{color:var(--muted);font-weight:500}.field input{width:100%;margin-top:7px;padding:13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:15px;background:#fff}
+.field{display:block;font-weight:700;font-size:13px}.field span{color:var(--muted);font-weight:500}.field input,.field textarea{width:100%;margin-top:7px;padding:13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:15px;background:#fff}
 .order-sub{margin:20px 0 10px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--copper)}
 .o-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fff}.o-name{font:700 18px "Playfair Display",serif;margin-bottom:10px}.o-name b{color:var(--copper);margin-right:8px;font-family:"DM Sans",sans-serif}
 .o-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}.o-row:first-of-type{border-top:0}.o-plate{font-weight:700;font-size:14px}.o-plate em{font-style:normal;color:var(--copper);margin-left:6px}
 .stepper{display:flex;align-items:center;gap:6px}.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--copper);color:#fff;font-size:22px;font-weight:700;cursor:pointer;line-height:1}.stepper button:disabled{background:#d9cfc2;cursor:default}.stepper output{min-width:30px;text-align:center;font-weight:800;font-size:16px}
 .order-foot{padding:14px 18px;border-top:1px solid var(--line);background:var(--paper)}#orderSummary{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)}#orderSummary.err{color:#c0392b}.order-foot .btn{width:100%;background:#20b95a;padding:15px;font-size:15px}.order-foot .btn:hover{background:#17a24b}
 @media(min-width:700px){.order-modal{align-items:center}.order-sheet{border-radius:18px;max-height:90vh}}
+.field+.field,.two{margin-top:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two .field{margin-top:0}.field b{color:#c0392b}.field textarea{resize:vertical;min-height:62px}.field input.bad,.field textarea.bad{border-color:#c0392b;background:#fff4f2}.order-sub.first{margin-top:4px}
 </style>
 <script>
 /* Image loader: tries images/ folder first, then online backup, else a nice placeholder (never a broken icon). */
@@ -89,8 +90,14 @@ function imgFail(el){
 <div class="order-sheet">
 <div class="order-head"><h2 id="orderTitle">Order for any function</h2><button type="button" class="order-close" id="orderClose" aria-label="Close">✕</button></div>
 <div class="order-body">
+<div class="order-sub first">1 · Aapki details</div>
+<label class="field">Aapka naam <b>*</b><input id="cName" type="text" maxlength="60" autocomplete="name" placeholder="Apna poora naam likhiye"></label>
+<label class="field">Mobile number <b>*</b><input id="cPhone" type="tel" inputmode="numeric" maxlength="14" autocomplete="tel" placeholder="10 digit mobile number"></label>
 <label class="field">Function / Occasion <span>(optional)</span><input id="fnName" type="text" maxlength="80" placeholder="Jaise: Shaadi, Birthday, Party, Office..."></label>
-<div class="order-sub">Biryani category chuniye</div>
+<div class="two"><label class="field">Kis din chahiye <span>(optional)</span><input id="cDate" type="date"></label><label class="field">Kitne baje <span>(optional)</span><input id="cTime" type="time"></label></div>
+<label class="field">Address / Delivery location <span>(optional)</span><textarea id="cAddr" rows="2" maxlength="200" placeholder="Ghar / hall ka pata ya landmark"></textarea></label>
+<label class="field">Koi khaas note <span>(optional)</span><textarea id="cNote" rows="2" maxlength="200" placeholder="Jaise: kam teekha, extra raita, packing..."></textarea></label>
+<div class="order-sub">2 · Biryani category chuniye</div>
 <div id="orderList"></div>
 </div>
 <div class="order-foot"><div id="orderSummary">Abhi koi plate select nahi hui</div><button type="button" class="btn" id="orderSubmit">Submit order via WhatsApp</button></div>
@@ -132,18 +139,38 @@ function imgFail(el){
   modal.addEventListener('click',function(e){if(e.target===modal)close();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)close();});
 
-  document.getElementById('orderSubmit').addEventListener('click',function(){
-    if(!total()){sum.textContent='Pehle kam se kam 1 plate chuniye';sum.className='err';return;}
-    var fn=document.getElementById('fnName').value.trim();
-    var lines=['*New Order - Muradabadi Biryani Shop*'];
-    if(fn)lines.push('Function: '+fn);
-    lines.push('');
+  var EMO=['1\uFE0F\u20E3','2\uFE0F\u20E3','3\uFE0F\u20E3','4\uFE0F\u20E3','5\uFE0F\u20E3','6\uFE0F\u20E3','7\uFE0F\u20E3','8\uFE0F\u20E3','9\uFE0F\u20E3'];
+  var LINE='\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+  function $(id){return document.getElementById(id);}
+  function fmtDate(v){if(!v)return '';var d=new Date(v+'T00:00:00');return isNaN(d)?v:d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+  function fmtTime(v){if(!v)return '';var a=v.split(':'),h=+a[0],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+a[1]+' '+ap;}
+  function fail(msg,id){
+    sum.textContent=msg;sum.className='err';
+    if(id){var el=$(id);el.classList.add('bad');el.scrollIntoView({block:'center',behavior:'smooth'});el.focus();}
+  }
+  modal.addEventListener('input',function(e){e.target.classList.remove('bad');});
+
+  $('orderSubmit').addEventListener('click',function(){
+    var name=$('cName').value.trim(),ph=$('cPhone').value.replace(/\D/g,'');
+    if(ph.length===12&&ph.indexOf('91')===0)ph=ph.slice(2);
+    if(!name){fail('Pehle apna naam likhiye','cName');return;}
+    if(ph.length!==10){fail('10 digit ka sahi mobile number likhiye','cPhone');return;}
+    if(!total()){fail('Kam se kam 1 plate chuniye');return;}
+    var fn=$('fnName').value.trim(),addr=$('cAddr').value.trim(),note=$('cNote').value.trim();
+    var when=[fmtDate($('cDate').value),fmtTime($('cTime').value)].filter(Boolean).join(', ');
+    var L=['\uD83C\uDF5B *NEW ORDER REQUEST*','_Muradabadi Biryani Shop, Patna_',LINE,'\uD83D\uDC64 *Customer Details*','Name: '+name,'Mobile: +91 '+ph];
+    if(fn)L.push('\uD83C\uDF89 Function: '+fn);
+    if(when)L.push('\uD83D\uDCC5 Required on: '+when);
+    if(addr)L.push('\uD83D\uDCCD Address: '+addr);
+    L.push('','\uD83E\uDDFE *Order Summary*');
     ITEMS.forEach(function(n,i){
-      var rows=PLATES.map(function(p,j){var q=qty[i+'-'+j]||0;return q?('   - '+p.n+' plate x '+q+' (₹'+p.p+') = ₹'+(q*p.p)):'';}).filter(Boolean);
-      if(rows.length){lines.push((i+1)+'. '+n);lines=lines.concat(rows);}
+      var rows=PLATES.map(function(p,j){var q=qty[i+'-'+j]||0;return q?('   \u25AB\uFE0F '+p.n+' \u00D7 '+q+' = \u20B9'+(q*p.p)):'';}).filter(Boolean);
+      if(rows.length){L.push((EMO[i]||((i+1)+'.'))+' *'+n+'*');L=L.concat(rows);}
     });
-    lines.push('');lines.push('Total plates: '+total());lines.push('Total amount: ₹'+amount());
-    window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank','noopener');
+    L.push(LINE,'\uD83C\uDF7D\uFE0F Total Plates: '+total(),'\uD83D\uDCB0 *Total Amount: \u20B9'+amount()+'*',LINE);
+    if(note)L.push('\uD83D\uDCDD Note: '+note,'');
+    L.push('Kripya order confirm kijiye. Shukriya! \uD83D\uDE4F');
+    window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(L.join('\n')),'_blank','noopener');
   });
 })();
 </script>
