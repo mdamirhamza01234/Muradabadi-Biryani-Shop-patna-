@@ -15,7 +15,7 @@ Open index.html and search for "SETTINGS" in the script: shop phone, branches, m
 
 ## Photos
 Create an `images` folder and upload: hero.jpg, story.jpg, chicken-biryani.jpg, mutton-biryani.jpg, egg-biryani.jpg, veg-biryani.jpg, fish-biryani.jpg, special-biryani.jpg
-(until then, a neat placeholder is shown).
+(until you upload your own, free-licence Pexels biryani photos are loaded online; if those fail, a neat placeholder is shown).
 
 ## Publish on GitHub Pages
 Settings -> Pages -> Deploy from a branch -> main / (root).
