@@ -37,7 +37,7 @@ body.lock{overflow:hidden}
 .field{display:block;font-weight:700;font-size:13px}.field span{color:var(--muted);font-weight:500}.field input{width:100%;margin-top:7px;padding:13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:15px;background:#fff}
 .order-sub{margin:20px 0 10px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--copper)}
 .o-item{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fff}.o-name{font:700 18px "Playfair Display",serif;margin-bottom:10px}.o-name b{color:var(--copper);margin-right:8px;font-family:"DM Sans",sans-serif}
-.o-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}.o-row:first-of-type{border-top:0}.o-plate{font-weight:700;font-size:14px}
+.o-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}.o-row:first-of-type{border-top:0}.o-plate{font-weight:700;font-size:14px}.o-plate em{font-style:normal;color:var(--copper);margin-left:6px}
 .stepper{display:flex;align-items:center;gap:6px}.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--copper);color:#fff;font-size:22px;font-weight:700;cursor:pointer;line-height:1}.stepper button:disabled{background:#d9cfc2;cursor:default}.stepper output{min-width:30px;text-align:center;font-weight:800;font-size:16px}
 .order-foot{padding:14px 18px;border-top:1px solid var(--line);background:var(--paper)}#orderSummary{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)}#orderSummary.err{color:#c0392b}.order-foot .btn{width:100%;background:#20b95a;padding:15px;font-size:15px}.order-foot .btn:hover{background:#17a24b}
 @media(min-width:700px){.order-modal{align-items:center}.order-sheet{border-radius:18px;max-height:90vh}}
@@ -98,23 +98,24 @@ function imgFail(el){
 <script>
 (function(){
   var WA_NUMBER='916398672009';
-  /* Biryani list — yahan naye items (Mutton, Egg, Veg...) add kar sakte hain */
-  var ITEMS=['Muradabadi Chicken Biryani','Chicken Biryani','Chicken Special'];
-  var PLATES=['Quarter','Half','Full'];
+  /* Biryani list aur rates — yahan badal sakte hain */
+  var ITEMS=['Chicken Biryani','Mutton Biryani','Egg Biryani','Veg Biryani','Seafood / Fish Biryani','Special Biryani'];
+  var PLATES=[{n:'Quarter',p:80},{n:'Half',p:140},{n:'Full',p:250}];
   var qty={};
   var modal=document.getElementById('orderModal'),list=document.getElementById('orderList'),sum=document.getElementById('orderSummary');
 
   list.innerHTML=ITEMS.map(function(n,i){
     return '<div class="o-item"><div class="o-name"><b>'+(i+1)+'.</b>'+n+'</div>'+PLATES.map(function(p,j){
       var k=i+'-'+j;
-      return '<div class="o-row"><span class="o-plate">'+p+' plate</span><div class="stepper"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Kam karein" disabled>−</button><output id="q'+k+'">0</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Badhayein">+</button></div></div>';
+      return '<div class="o-row"><span class="o-plate">'+p.n+' plate <em>₹'+p.p+'</em></span><div class="stepper"><button type="button" data-k="'+k+'" data-d="-1" aria-label="Kam karein" disabled>−</button><output id="q'+k+'">0</output><button type="button" data-k="'+k+'" data-d="1" aria-label="Badhayein">+</button></div></div>';
     }).join('')+'</div>';
   }).join('');
 
   function total(){var t=0;for(var k in qty)t+=qty[k];return t;}
+  function amount(){var a=0;for(var k in qty)a+=qty[k]*PLATES[+k.split('-')[1]].p;return a;}
   function refresh(){
     var t=total();sum.className='';
-    sum.textContent=t?('Total '+t+' plate'+(t>1?'s':'')+' select hui'):'Abhi koi plate select nahi hui';
+    sum.textContent=t?('Total '+t+' plate'+(t>1?'s':'')+' · ₹'+amount()):'Abhi koi plate select nahi hui';
   }
   list.addEventListener('click',function(e){
     var b=e.target.closest('button[data-k]');if(!b)return;
@@ -138,10 +139,10 @@ function imgFail(el){
     if(fn)lines.push('Function: '+fn);
     lines.push('');
     ITEMS.forEach(function(n,i){
-      var rows=PLATES.map(function(p,j){var q=qty[i+'-'+j]||0;return q?('   - '+p+' plate x '+q):'';}).filter(Boolean);
+      var rows=PLATES.map(function(p,j){var q=qty[i+'-'+j]||0;return q?('   - '+p.n+' plate x '+q+' (₹'+p.p+') = ₹'+(q*p.p)):'';}).filter(Boolean);
       if(rows.length){lines.push((i+1)+'. '+n);lines=lines.concat(rows);}
     });
-    lines.push('');lines.push('Total plates: '+total());
+    lines.push('');lines.push('Total plates: '+total());lines.push('Total amount: ₹'+amount());
     window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank','noopener');
   });
 })();
