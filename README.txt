@@ -1,18 +1,21 @@
 # Muradabadi Biryani Shop Website
 
-A responsive one-page website concept for a Muradabadi Biryani shop near Patna Junction.
+Responsive one-page website for the Muradabadi Biryani Shop near Patna Junction (single file: index.html).
 
-## Files
-- `index.html` — complete website (HTML, CSS and JavaScript in one file).
+## Features
+- Menu with search, Quarter / Half / Full plate selection (Rs 80 / 140 / 250), cart with +/- and remove confirmation
+- Order type: Dine-In / Takeaway / Delivery, coupon box, checkout with name, mobile, address, date/time, payment choice
+- "Order for any function" bulk order popup, Catering and Franchise enquiry forms
+- All orders and enquiries go to the shop on WhatsApp as a neatly formatted message
+- My Account (saved details + order history + reorder) stored on the customer's phone only
+- Signature dishes, Find Us, About, Contact, Privacy / Terms / Refund popups
+
+## Edit easily
+Open index.html and search for "SETTINGS" in the script: shop phone, branches, menu items, plate rates, coupons and Swiggy/Zomato links are all there.
+
+## Photos
+Create an `images` folder and upload: hero.jpg, story.jpg, chicken-biryani.jpg, mutton-biryani.jpg, egg-biryani.jpg, veg-biryani.jpg, fish-biryani.jpg, special-biryani.jpg
+(until then, a neat placeholder is shown).
 
 ## Publish on GitHub Pages
-1. Create a GitHub repository.
-2. Upload `index.html` to the repository root.
-3. Open Settings → Pages.
-4. Choose Deploy from a branch, select `main` and `/ (root)`, then Save.
-
-## Important: verify before publishing
-- Confirm the shop's exact name, address, phone and WhatsApp number.
-- Confirm current menu, prices and opening hours. Menu cards are sample content and deliberately do not claim prices.
-- Replace the sample food photography URLs with the shop's own food photos for the best branding.
-- The address and phone currently use public business listing details for the Muradabadi Biryani Shop in New Market, Patna.
+Settings -> Pages -> Deploy from a branch -> main / (root).
